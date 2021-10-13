@@ -1,5 +1,7 @@
 <?php
 
+$config = require(dirname(__FILE__) . '/config.php');
+
 header('Content-Type: text/html; charset=utf-8');
 
 try {
@@ -36,19 +38,16 @@ try {
     $finfo = new finfo(FILEINFO_MIME_TYPE);
     if (false === $ext = array_search(
         $finfo->file($_FILES['upfile']['tmp_name']),
-        array(
-            'jpg' => 'image/jpeg',
-            'png' => 'image/png',
-            'gif' => 'image/gif',
-        ),
+        $config['upload']['validate']['extnames'],
         true
     )) {
         throw new RuntimeException('Invalid file format.');
     }
 
-    if (!is_dir('./uploads')) {
-      mkdir('./uploads');
-      chmod('./uploads', 0777);
+    $upload_path = $config['upload']['path'];
+    if (!is_dir($upload_path)) {
+      mkdir($upload_path);
+      chmod($upload_path, 0777);
     }
 
     $upfilePath = sprintf('./uploads/%s.%s',
