@@ -1,6 +1,8 @@
 <?php
 
 $config = require(dirname(__FILE__) . '/config.php');
+require_once dirname(__FILE__) . '/photos.php';
+require_once dirname(__FILE__) . '/createDb.php';
 
 header('Content-Type: text/html; charset=utf-8');
 
@@ -65,6 +67,8 @@ try {
         throw new RuntimeException('Failed to move uploaded file.');
     }
 
+    $photos = new Photos(createDbConnection());
+    $photos->add($upfilePath);
     echo "<p>File is uploaded successfully.</p>";
     echo "<a href='$upfilePath' target='_blank'>$upfilePath</a>";
 
